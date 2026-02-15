@@ -53,7 +53,6 @@ export default function ChatPage() {
     try {
       const response = await fetch(`/api/chat?conversationId=${id}`);
       if (response.status === 404) {
-        localStorage.removeItem(STORAGE_KEY);
         setConversationId(null);
         setMessages([]);
         return;

@@ -24,6 +24,42 @@ npm run dev
 
 Open `http://localhost:3000`.
 
+## Docker (portable setup)
+
+This repo now includes:
+
+- `Dockerfile` for the Next.js app
+- `Dockerfile.retrieval` for the retrieval API
+- `docker-compose.yml` to run both together
+
+### 1) Build retrieval data (one-time per machine/volume)
+
+The retrieval container expects `data/index/faiss.index` and `data/index/chunks.jsonl`.
+Generate them with:
+
+```bash
+docker compose run --rm retrieval python scripts/run_rag_pipeline.py --max 200 --rps-wikidata 1.0 --rps-wikipedia 0.5
+```
+
+Remove `--max 200` for the full dataset.
+
+### 2) Start everything
+
+```bash
+docker compose up --build
+```
+
+Then open:
+
+- App: `http://localhost:3000`
+- Retrieval API: `http://localhost:8081`
+
+Notes:
+
+- SQLite and uploads persist on your host via `./data` and `./uploads`.
+- The app runs migrations automatically on container start.
+- Inside Docker, the app uses `RETRIEVAL_URL=http://retrieval:8081`.
+
 ## Quick Test
 
 1. Start a new chat by typing a message and optionally attaching an image.
